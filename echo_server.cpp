@@ -69,13 +69,15 @@ void bfun(int childfd)
 		}
 		printf("%s\n", buf);
 		mtx_lock.lock();
-		for(list<int>::iterator iter = fdlist.begin(); iter != fdlist.end(); iter++){
+		for(list<int>::iterator iter = fdlist.begin(); iter != fdlist.end();){
 			ssize_t sent = send(*iter, buf, strlen(buf), 0);
 			if (sent == 0) {
 				perror("send failed");
-				fdlist.remove(*iter);
+				iter = fdlist.erase(iter);
 				continue;
 			}
+			else
+				iter++;
 		}
 		mtx_lock.unlock();
 	}
